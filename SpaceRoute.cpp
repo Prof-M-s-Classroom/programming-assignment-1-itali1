@@ -37,16 +37,163 @@ public:
     SpaceRoute();  // Constructor
     ~SpaceRoute(); // Destructor
 
-    void addWaypointAtBeginning(T& data);
-    void addWaypointAtEnd(T& data);
-    void addWaypointAtIndex(int index, T& data);
-    void removeWaypointAtBeginning();
-    void removeWaypointAtEnd();
-    void removeWaypointAtIndex(int index);
-    void traverseForward();
-    void traverseBackward();
-    Node<T>* getWaypoint(int index);
-    void setWaypoint(int index, T& data);
+    void addWaypointAtBeginning(T& data) {
+        if(head == nullptr) {
+            Node<T>* newNode = new Node<T>(data);
+            head = newNode;
+        } else {
+            Node<T>* newNode = new Node<T>(data);
+            head->prev = newNode;
+            newNode->next = head;
+            head = newNode;
+        }
+        return;
+
+    }
+    void addWaypointAtEnd(T& data) {
+        Node<T>* newNode = new Node<T>(data);
+        if(head == nullptr) {
+            head = newNode;
+        }else {
+            tail->next = newNode;
+            newNode->prev = tail;
+            tail = newNode;
+        }
+        return;
+
+    }
+    void addWaypointAtIndex(int index, T& data) {
+        Node<T>* newNode = new Node<T>(data);
+        if(index < 0 || index > head->data.size()) {
+            cout << "Index out of bounds" << endl;
+            return;
+        }
+        if(index == 0){
+            newNode->next=head;
+            head->prev=newNode;
+            head=newNode;
+        }
+        if(index == head->data.size()) {
+            tail->next=newNode;
+            newNode->prev=tail;
+            tail=newNode;
+        }else {
+            Node<T>* temp = head;
+            for(int i=0; i<index-1; i++) {
+                temp = temp->next;
+            }
+            newNode->next = temp->next;
+            temp->next = newNode;
+            newNode->prev = temp;
+            newNode->next->prev = newNode;
+        }
+        return;
+    }
+    void removeWaypointAtBeginning(){
+        if(head != nullptr) {
+            Node<T>* temp = head;
+            head = head->next;
+            delete temp;
+        } else {
+            cout << "There are no points to remove" << endl;
+        }
+        return;
+    }
+
+    void removeWaypointAtEnd() {
+        if(head != nullptr) {
+            Node<T>* temp = tail;
+            tail = tail->prev;
+            delete temp;
+        }else {
+            cout << "There are no points to remove" << endl;
+        }
+        return;
+    }
+    void removeWaypointAtIndex(int index) {
+        if(index < 0 || index > head->data.size()) {
+            cout << "Index out of bounds" << endl;
+            return;
+        }
+        if(index == 0) {
+            if(head != nullptr) {
+                Node<T>* temp = head;
+                head = head->next;
+                delete temp;
+            } else {
+                cout << "There are no points to remove" << endl;
+            }
+            return;
+        }
+
+        if(index == head->data.size()) {
+            if(head != nullptr) {
+                Node<T>* temp = tail;
+                tail = tail->prev;
+                delete temp;
+            }else {
+                cout << "There are no points to remove" << endl;
+            }
+            return;
+        }else {
+            Node<T>* temp = head;
+            for(int i=0; i<index; i++) {
+                temp = temp->next;
+            }
+            temp->prev->next = temp->next;
+            temp->next->prev = temp->prev;
+            delete temp;
+        }
+
+    }
+    void traverseForward() {
+        if(head != nullptr) {
+            Node<T>* temp = head;
+            while(temp != nullptr) {
+                temp->print();
+                temp = temp->next;
+            }
+        }
+    }
+    void traverseBackward() {
+        if(head != nullptr) {
+            Node<T>* temp = tail;
+            while(temp != nullptr) {
+                temp->print();
+                temp = temp->prev;
+            }
+        }
+    }
+    Node<T>* getWaypoint(int index) {
+        if(index < 0 || index > head->data.size()) {
+            return nullptr;
+        }
+        Node<T>* temp = head;
+        for(int i=0; i<index; i++) {
+            temp = temp->next;
+        }
+        return temp;
+    }
+    void setWaypoint(int index, T& data) {
+        if(index < 0 || index > head->data.size()) {
+            cout << "Index out of bounds" << endl;
+            return;
+        }
+        if(index == head->data.size()) {
+            tail->data = data;
+            return;
+        }
+        else if (index == 0){
+            head->data = data;
+            return;
+        }
+        Node<T>* temp = head;
+        for(int i=0; i<index-1; i++) {
+            temp = temp->next;
+        }
+        temp->data = data;
+        return;
+    }
     void print(){
 
             Node<T>* current = head;
