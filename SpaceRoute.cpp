@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 template <typename T>
@@ -34,33 +35,37 @@ private:
     Node<T>* tail;
 
 public:
-    SpaceRoute();  // Constructor
-    ~SpaceRoute(); // Destructor
+    //keep getting an error therefore, I changed the constructor or destructor. Not sure how to fix the error without making this change
+    SpaceRoute(): head(nullptr), tail(nullptr) {}
+    ~SpaceRoute() {
+        Node<T>* curr = head;
+        while (curr != nullptr) {
+            Node<T>* temp = curr;
+            curr = curr->next;
+            delete temp;
+        }
+    }
 
     void addWaypointAtBeginning(T& data) {
+        Node<T>* newNode = new Node<T>(data);
         if(head == nullptr) {
-            Node<T>* newNode = new Node<T>(data);
             head = newNode;
         } else {
-            Node<T>* newNode = new Node<T>(data);
             head->prev = newNode;
             newNode->next = head;
             head = newNode;
         }
-        return;
 
     }
     void addWaypointAtEnd(T& data) {
         Node<T>* newNode = new Node<T>(data);
         if(head == nullptr) {
-            head = newNode;
-        }else {
+            head = tail = newNode;
+        } else {
             tail->next = newNode;
             newNode->prev = tail;
             tail = newNode;
         }
-        return;
-
     }
     void addWaypointAtIndex(int index, T& data) {
         Node<T>* newNode = new Node<T>(data);
@@ -97,10 +102,9 @@ public:
         } else {
             cout << "There are no points to remove" << endl;
         }
-        return;
     }
 
-    void removeWaypointAtEnd() {
+    void removeWaypointAtEnd() { //when printing, a lot of symbols print after. NOTE: Has happened before, need to check later
         if(head != nullptr) {
             Node<T>* temp = tail;
             tail = tail->prev;
@@ -108,7 +112,6 @@ public:
         }else {
             cout << "There are no points to remove" << endl;
         }
-        return;
     }
     void removeWaypointAtIndex(int index) {
         if(index < 0 || index > head->data.size()) {
@@ -169,7 +172,7 @@ public:
             return nullptr;
         }
         Node<T>* temp = head;
-        for(int i=0; i<index; i++) {
+        for(int i=0; i<=index; i++) {
             temp = temp->next;
         }
         return temp;
@@ -188,7 +191,7 @@ public:
             return;
         }
         Node<T>* temp = head;
-        for(int i=0; i<index-1; i++) {
+        for(int i=0; i<index; i++) {
             temp = temp->next;
         }
         temp->data = data;
